@@ -10,7 +10,7 @@ let invalid_decode str = prerr_endline ("invalid decode " ^ str); exit 1
 let string_of_arg = function
   | E_aux (E_id id, _) -> "\"" ^ string_of_id id ^ "\""
   | exp -> invalid_decode ("call arg " ^ string_of_exp exp)
-             
+
 let rec get_calls exp = match exp with
   | E_aux (E_block exps, _) ->
      get_calls (Util.last exps)
@@ -34,11 +34,11 @@ let slice_info = function
        when string_of_id op = "op_code" && string_of_id f = "bitvector_access" ->
      string_of_exp bit
   | exp -> invalid_decode ("slice_info " ^ string_of_exp exp)
-         
+
 let rec get_slice first exp = match exp with
   | E_aux (E_block exps, _) ->
      List.fold_left get_slice first exps
-  | E_aux (E_var (LEXP_aux (LEXP_cast (typ, id), _), slice, exp), _) ->
+  | E_aux (E_var (LE_aux (LE_typ (typ, id), _), slice, exp), _) ->
      if not first then (
        print_string ", "
      );
@@ -46,9 +46,9 @@ let rec get_slice first exp = match exp with
      get_slice false exp
   | _ ->
      first
- 
+
 let get_see exp = match exp with
-  | E_aux (E_block (E_aux (E_assign (LEXP_aux (LEXP_id id, _), number), _) :: _), _) when string_of_id id = "SEE" ->
+  | E_aux (E_block (E_aux (E_assign (LE_aux (LE_id id, _), number), _) :: _), _) when string_of_id id = "SEE" ->
      print_endline ("see = " ^ string_of_exp number)
   | _ -> invalid_decode ("SEE " ^ string_of_exp exp)
 
@@ -110,7 +110,7 @@ let rec get_mask (P_aux (aux, _) as pat) =
 let arm_decode_info ast env =
   List.iter (fun def ->
       match def with
-      | DEF_scattered (SD_aux (SD_funcl (FCL_aux (FCL_Funcl (id, pexp), _)), _)) when Id.compare id (mk_id "decode64") = 0 ->
+      | DEF_aux (DEF_scattered (SD_aux (SD_funcl (FCL_aux (FCL_funcl (id, pexp), _)), _)), _) when Id.compare id (mk_id "decode64") = 0 ->
          begin match pexp with
          | (Pat_aux (Pat_when (pat, _, exp), _) | Pat_aux (Pat_exp (pat, exp), _)) ->
             print_endline "[[opcode]]";
@@ -125,9 +125,9 @@ let arm_decode_info ast env =
       | _ -> ()
     ) ast.defs;
   exit 0
-  
+
 let _ =
   Target.register
     ~name:"arm_decode"
-    ~pre_descatter_hook:arm_decode_info
-    (fun _ _ _ _ _ -> ())
+    ~pre_rewrites_hook:arm_decode_info
+    Target.empty_action
