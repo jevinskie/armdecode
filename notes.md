@@ -1,0 +1,1 @@
+sail -memo_z3 -plugin plugin.cmxs -arm_decode ../sail-arm/arm-v9.4-a/{src/prelude.sail,src/decode_start.sail,src/builtins.sail,src/v8_base.sail,src/instrs64.sail,src/instrs32.sail,src/no_devices.sail,src/fetch.sail,src/interrupts.sail,src/map_clauses.sail,src/event_clauses.sail,src/stubs.sail} > empty.txt

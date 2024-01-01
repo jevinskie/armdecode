@@ -110,7 +110,7 @@ let rec get_mask (P_aux (aux, _) as pat) =
 let arm_decode_info ast env =
   List.iter (fun def ->
       match def with
-      | DEF_aux (DEF_scattered (SD_aux (SD_funcl (FCL_aux (FCL_funcl (id, pexp), _)), _)), _) when Id.compare id (mk_id "decode64") = 0 ->
+      | DEF_aux (DEF_scattered (SD_aux (SD_funcl (FCL_aux (FCL_funcl (id, pexp), _)), _)), _) when Id.compare id (mk_id "__DecodeA64") = 0 ->
          begin match pexp with
          | (Pat_aux (Pat_when (pat, _, exp), _) | Pat_aux (Pat_exp (pat, exp), _)) ->
             print_endline "[[opcode]]";
@@ -129,5 +129,5 @@ let arm_decode_info ast env =
 let _ =
   Target.register
     ~name:"arm_decode"
-    ~pre_rewrites_hook:arm_decode_info
+    ~pre_descatter_hook:arm_decode_info
     Target.empty_action
