@@ -1,7 +1,8 @@
 (executable
  (name armdecode)
  (modes (native plugin))
- (libraries libsail))
+ (preprocess (staged_pps ppx_import ppx_deriving.show))
+ (libraries libsail ppx_import ppx_deriving))
 
 (install
   (section (site (libsail plugins)))

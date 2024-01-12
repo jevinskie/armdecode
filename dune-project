@@ -8,4 +8,6 @@
   (name armdecode)
   (synopsis "ARM decode info extractor")
   (depends
-    (libsail (= :version))))
+    (libsail (= :version))
+    (ppx_deriving (>= 5.2.1))
+    (ppx_import (>= 1.10.0))))

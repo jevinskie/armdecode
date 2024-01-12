@@ -107,7 +107,8 @@ let rec get_mask (P_aux (aux, _) as pat) =
      get_mask pat
   | _ -> invalid_decode ("get_mask" ^ string_of_pat pat)
 
-let arm_decode_info ast env =
+let arm_decode_info_real ast env =
+  print_endline (Printf.sprintf "mk_id \"__DecodeA64\": %s" (string_of_id (mk_id "__DecodeA64")));
   List.iter (fun def ->
       match def with
       | DEF_aux (DEF_scattered (SD_aux (SD_funcl (FCL_aux (FCL_funcl (id, pexp), _)), _)), _) when Id.compare id (mk_id "__DecodeA64") = 0 ->
@@ -125,6 +126,20 @@ let arm_decode_info ast env =
       | _ -> ()
     ) ast.defs;
   exit 0
+
+  let arm_decode_info ast env =
+    print_endline (Printf.sprintf "mk_id \"__DecodeA64\": %s" (string_of_id (mk_id "__DecodeA64")));
+    List.iter (fun def ->
+        match def with
+        (* | DEF_aux (DEF_scattered (SD_aux (SD_funcl (FCL_aux (FCL_funcl (id, pexp), _)), _)), _) -> *)
+        | foo ->
+          Format.printf "foo: @[%s@]@." "hello";
+          (* print_endline (Printf.sprintf "id: %s" (string_of_id id)); *)
+          print_endline "got match";
+          ()
+        (* | _ -> () *)
+      ) ast.defs;
+    exit 0
 
 let _ =
   Target.register
